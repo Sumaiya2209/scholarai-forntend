@@ -1,15 +1,10 @@
 import Link from "next/link";
 import { Cpu, Globe, Flask, GraduationCap, BookOpen, Layers } from "@gravity-ui/icons";
 import { Container } from "@/components/ui/Container";
+import { RESEARCH_FIELDS } from "@/lib/constants";
 
-const fields = [
-  { name: "Computer Science", icon: Cpu },
-  { name: "Economics", icon: Globe },
-  { name: "Biology", icon: Flask },
-  { name: "Education", icon: GraduationCap },
-  { name: "Literature", icon: BookOpen },
-  { name: "Engineering", icon: Layers },
-];
+const fieldIcons = [Cpu, Globe, Flask, GraduationCap, BookOpen, Layers];
+const fields = RESEARCH_FIELDS.map((name, i) => ({ name, icon: fieldIcons[i] }));
 
 export function FeaturedFields() {
   return (
