@@ -28,7 +28,12 @@ export function Navbar() {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const links = session ? loggedInLinks : loggedOutLinks;
+  const isAdmin = (session?.user as { role?: string } | undefined)?.role === "admin";
+  const links = session
+    ? isAdmin
+      ? [...loggedInLinks, { href: "/admin", label: "Admin panel" }]
+      : loggedInLinks
+    : loggedOutLinks;
 
   return (
     <header className="sticky top-0 z-40 border-b border-parchment-line bg-white">
@@ -96,9 +101,8 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className={`rounded-md px-3 py-2.5 text-[15px] font-medium ${
-                  pathname === link.href ? "bg-navy/5 text-amber-dark" : "text-ink-muted"
-                }`}
+                className={`rounded-md px-3 py-2.5 text-[15px] font-medium ${pathname === link.href ? "bg-navy/5 text-amber-dark" : "text-ink-muted"
+                  }`}
               >
                 {link.label}
               </Link>

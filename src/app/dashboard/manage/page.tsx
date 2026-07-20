@@ -1,20 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
 import { AuthGuard } from "@/components/ui/AuthGuard";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { PapersByFieldChart } from "@/components/paper/PapersByFieldChart";
 import { citationId } from "@/lib/paperDisplay";
 import { useSession } from "@/lib/auth-client";
 import { useMyPapers } from "@/hooks/useMyPapers";
 import { useDeletePaper } from "@/hooks/usePaperActions";
-import { usePendingPapers, useApprovePaper, useRejectPaper } from "@/hooks/useAdminPapers";
-import { Paper } from "@/types";
-import Link from "next/link";
-
-type Tab = "mine" | "pending" | "analytics";
 
 export default function ManagePapersPage() {
   return (
@@ -27,37 +21,20 @@ export default function ManagePapersPage() {
 function ManageContent() {
   const { data: session } = useSession();
   const isAdmin = (session?.user as { role?: string } | undefined)?.role === "admin";
-  const [tab, setTab] = useState<Tab>("mine");
 
   return (
     <Container className="py-10">
-      <h1 className="mb-6 font-display text-3xl font-semibold text-ink">Manage papers</h1>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="font-display text-3xl font-semibold text-ink">Manage papers</h1>
+        {isAdmin && (
+          <Link href="/admin" className="text-[13px] font-medium text-navy hover:underline">
+            Go to admin panel →
+          </Link>
+        )}
+      </div>
 
-      {isAdmin && (
-        <div className="mb-6 flex gap-1 border-b border-parchment-line">
-          <TabButton active={tab === "mine"} onClick={() => setTab("mine")}>My papers</TabButton>
-          <TabButton active={tab === "pending"} onClick={() => setTab("pending")}>Pending approvals</TabButton>
-          <TabButton active={tab === "analytics"} onClick={() => setTab("analytics")}>Analytics</TabButton>
-        </div>
-      )}
-
-      {tab === "mine" && <MyPapersTable />}
-      {tab === "pending" && <PendingApprovalsTable />}
-      {tab === "analytics" && <PapersByFieldChart />}
+      <MyPapersTable />
     </Container>
-  );
-}
-
-function TabButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`px-4 py-2.5 text-[13px] font-medium transition-colors ${
-        active ? "border-b-2 border-amber text-ink" : "text-ink-faint hover:text-ink"
-      }`}
-    >
-      {children}
-    </button>
   );
 }
 
@@ -68,7 +45,9 @@ function MyPapersTable() {
   if (isLoading) return <TableSkeleton />;
 
   if (!data || data.papers.length === 0) {
-    return <EmptyState message="You haven't submitted any papers yet." ctaLabel="Submit your first paper" ctaHref="/papers/add" />;
+    return (
+      <EmptyState message="You haven't submitted any papers yet." ctaLabel="Submit your first paper" ctaHref="/papers/add" />
+    );
   }
 
   return (
@@ -117,52 +96,6 @@ function MyPapersTable() {
           ))}
         </tbody>
       </table>
-    </div>
-  );
-}
-
-function PendingApprovalsTable() {
-  const { data, isLoading } = usePendingPapers();
-  const approvePaper = useApprovePaper();
-  const rejectPaper = useRejectPaper();
-
-  if (isLoading) return <TableSkeleton />;
-
-  if (!data || data.papers.length === 0) {
-    return <EmptyState message="No papers waiting for review right now." />;
-  }
-
-  return (
-    <div className="flex flex-col gap-3">
-      {data.papers.map((paper: Paper) => (
-        <div key={paper._id} className="rounded-lg border border-parchment-line bg-white p-4">
-          <div className="mb-2 flex items-start justify-between gap-4">
-            <div>
-              <div className="font-mono text-[11px] text-ink-faint">[{citationId(paper._id)}] · {paper.field}</div>
-              <h3 className="font-display text-[15px] font-semibold text-ink">{paper.title}</h3>
-              <p className="mt-1 text-[12px] text-ink-faint">
-                by {paper.authors.join(", ")} · {typeof paper.uploadedBy === "object" ? paper.uploadedBy.name : "Unknown"}
-              </p>
-            </div>
-            <div className="flex shrink-0 gap-2">
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => {
-                  const reason = prompt("Reason for rejection (optional):") || "";
-                  rejectPaper.mutate({ paperId: paper._id, reason });
-                }}
-              >
-                Reject
-              </Button>
-              <Button size="sm" onClick={() => approvePaper.mutate(paper._id)} disabled={approvePaper.isPending}>
-                Approve
-              </Button>
-            </div>
-          </div>
-          <p className="line-clamp-2 text-[12.5px] text-ink-faint">{paper.abstract}</p>
-        </div>
-      ))}
     </div>
   );
 }

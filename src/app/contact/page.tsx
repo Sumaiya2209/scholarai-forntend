@@ -126,7 +126,7 @@ export default function ContactPage() {
               <div>
                 <h3 className="mb-2 font-display font-semibold text-ink">Email</h3>
                 <a href="mailto:hello@scholarai.com" className="text-amber hover:text-amber/80">
-                  hello@scholarai.com
+                  sumaiyajannat2209@gmail.com
                 </a>
               </div>
 
@@ -134,7 +134,7 @@ export default function ContactPage() {
                 <h3 className="mb-2 font-display font-semibold text-ink">Support</h3>
                 <p className="text-sm text-ink-muted mb-2">Need help? Check out our FAQ or reach out to support.</p>
                 <a href="mailto:support@scholarai.com" className="text-amber hover:text-amber/80">
-                  support@scholarai.com
+                  jannatsumaiya199@gmail.com
                 </a>
               </div>
 

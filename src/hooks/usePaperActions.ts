@@ -25,6 +25,8 @@ export function useCreatePaper() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["papers", "mine"] });
+      queryClient.invalidateQueries({ queryKey: ["papers"] });
+      queryClient.invalidateQueries({ queryKey: ["admin"] });
     },
   });
 }
