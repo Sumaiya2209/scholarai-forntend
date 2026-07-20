@@ -5,7 +5,7 @@ import { HowItWorks } from "@/components/home/HowItWorks";
 import { PlatformStats } from "@/components/home/PlatformStats";
 import { WhyScholarAI } from "@/components/home/WhyScholarAI";
 import { CTA } from "@/components/home/CTA";
-import Tips, { ResearchTips } from "@/components/home/Tips";
+import { ResearchTips } from "@/components/home/Tips";
 
 export default function HomePage() {
   return (

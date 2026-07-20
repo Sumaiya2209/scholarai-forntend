@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
@@ -16,7 +16,7 @@ export function Hero() {
   const router = useRouter();
   const { data, isLoading } = usePapers({ sort: "newest", limit: 4 });
 
-  function handleSearch(e) {
+  function handleSearch(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     router.push(`/explore${search ? `?search=${encodeURIComponent(search)}` : ""}`);
   }
@@ -80,7 +80,12 @@ export function Hero() {
   );
 }
 
-function Stat({ value, label }) {
+interface StatProps {
+  value: string | number;
+  label: string;
+}
+
+function Stat({ value, label }: StatProps) {
   return (
     <div>
       <div className="font-display text-[22px] font-semibold text-parchment leading-none">

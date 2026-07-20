@@ -83,3 +83,4 @@ export function ResearchTips() {
     </div>
   );
 }
+export default ResearchTips;
